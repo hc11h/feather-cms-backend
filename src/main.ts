@@ -7,6 +7,8 @@ async function bootstrap() {
 
   app.enableCors();
 
+  app.setGlobalPrefix('api');
+
   // Use ConfigService to fetch PORT from .env
   const configService = app.get(ConfigService);
   const port = configService.get<number>('PORT', 3001);
