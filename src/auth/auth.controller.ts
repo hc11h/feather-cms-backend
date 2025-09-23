@@ -10,16 +10,17 @@ export class AuthController {
   constructor(
     private jwtService: JwtService,
     private authService: AuthService,
-  ) {}
+  ) { }
 
   @Get('google')
   @UseGuards(AuthGuard('google'))
-  async googleAuth() {}
+  async googleAuth() { }
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
   getProfile(@Req() req) {
-    return req.user; // user info from JWT strategy
+
+    return req.user;
   }
 
   @Get('callback/google')
