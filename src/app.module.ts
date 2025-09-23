@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { PrismaModule } from './prisma/prisma.module';
 import { AuthModule } from './auth/auth.module';
 import { EditorModule } from './editor/editor.module';
+import { BlogAuthorModule } from './author/author.module';
 
 @Module({
   imports: [
@@ -15,7 +16,8 @@ import { EditorModule } from './editor/editor.module';
     }),
     PrismaModule,
     AuthModule,
-    EditorModule
+    EditorModule,
+    BlogAuthorModule
   ],
   controllers: [AppController],
   providers: [AppService],
