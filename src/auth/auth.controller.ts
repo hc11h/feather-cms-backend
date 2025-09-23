@@ -3,23 +3,24 @@ import { AuthGuard } from '@nestjs/passport';
 import { JwtService } from '@nestjs/jwt';
 import type { Response } from 'express';
 import { AuthService } from './auth.service';
-import { JwtAuthGuard } from './jwt-auth.guard';
+import { JwtAuthGuard } from './guards/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private jwtService: JwtService,
     private authService: AuthService,
-  ) {}
+  ) { }
 
   @Get('google')
   @UseGuards(AuthGuard('google'))
-  async googleAuth() {}
+  async googleAuth() { }
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
   getProfile(@Req() req) {
-    return req.user; // user info from JWT strategy
+
+    return req.user;
   }
 
   @Get('callback/google')

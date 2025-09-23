@@ -1,40 +1,107 @@
 generator client {
-  provider = "prisma-client-js"
+ provider = "prisma-client-js"
 }
+
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+ provider = "postgresql"
+ url      = env("DATABASE_URL")
 }
+
 
 model User {
-  id         String         @id @default(uuid())
-  email      String         @unique
-  name       String?
-  image      String?
-  provider   String?        // e.g., "google", "facebook"
-  providerId String?        // external provider user ID
-  createdAt  DateTime       @default(now())
-  updatedAt  DateTime       @updatedAt
-  lastLogin  DateTime?      // track last login
-  apiKey     ApiKey?
-  loginHistory LoginHistory[] // relation to login history
+ id           String         @id @default(uuid())
+ email        String         @unique
+ name         String?
+ image        String?
+ provider     String?        
+ providerId   String?        
+ createdAt    DateTime       @default(now())
+ updatedAt    DateTime       @updatedAt
+ lastLogin    DateTime?     
+ 
+ // Relations
+ apiKey       ApiKey?
+ loginHistory LoginHistory[]
+ editors      Editor[]       
+ blogAuthors  BlogAuthor[]   
 }
 
+
 model LoginHistory {
-  id        String   @id @default(uuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  loginAt   DateTime @default(now())
-  provider  String?
+ id        String   @id @default(uuid())
+ userId    String
+ user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+ loginAt   DateTime @default(now())
+ provider  String?
+}
+
+
+model Blog {
+ id             String      @id @default(uuid())
+ title          String
+ slug           String      @unique
+ editorId       String
+ editor         Editor      @relation(fields: [editorId], references: [id])
+ blogAuthorId   String
+ blogAuthor     BlogAuthor  @relation(fields: [blogAuthorId], references: [id])
+ status         BlogStatus  @default(DRAFT)
+ seoTitle       String?
+ seoDescription String?
+ seoKeywords    String?
+ publishedAt    DateTime?
+ scheduledAt    DateTime?   
+ createdAt      DateTime    @default(now())
+ updatedAt      DateTime    @updatedAt
+ isDeleted   Boolean  @default(false)
+ deletedAt   DateTime?
+}
+
+
+enum BlogStatus {
+ DRAFT
+ PRIVATE
+ PUBLIC
+ SCHEDULED
+}
+
+
+model Editor {
+ id        String   @id @default(uuid())
+ name      String
+ content   String   @db.Text 
+ userId    String   
+ user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ isDeleted   Boolean  @default(false)
+ deletedAt   DateTime?
+  // Relations
+ blogs     Blog[]   
+}
+
+
+model BlogAuthor {
+ id           String   @id @default(uuid())
+ name         String
+ email        String   @unique
+ profileImage String?
+ description  String?  @db.Text
+ userId       String   
+ user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+ createdAt    DateTime @default(now())
+ updatedAt    DateTime @updatedAt
+ isDeleted   Boolean  @default(false)
+ deletedAt   DateTime?
+  // Relations
+ blogs        Blog[]   
 }
 
 model ApiKey {
-  id         String   @id @default(uuid())
-  key        String   @unique
-  createdAt  DateTime @default(now())
-  isActive   Boolean  @default(true)
-
-  userId     String   @unique
-  user       User     @relation(fields: [userId], references: [id])
+ id        String   @id @default(uuid())
+ key       String   @unique
+ createdAt DateTime @default(now())
+ isActive  Boolean  @default(true)
+ userId    String   @unique
+ user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
