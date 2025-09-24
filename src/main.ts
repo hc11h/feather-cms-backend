@@ -9,7 +9,7 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
 
-  // Use ConfigService to fetch PORT from .env
+
   const configService = app.get(ConfigService);
   const port = configService.get<number>('PORT') || 3001;
 
@@ -17,7 +17,7 @@ async function bootstrap() {
   console.log(`🚀 Application is running on: http://localhost:${port}`);
 }
 
-// Handle errors safely
+
 bootstrap().catch((err) => {
   console.error('❌ Failed to start application:', err);
   process.exit(1);

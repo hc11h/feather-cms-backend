@@ -1,4 +1,3 @@
-// src/auth/auth.service.ts
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { GoogleProfile } from './types';

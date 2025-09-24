@@ -30,7 +30,7 @@ export class BlogsService {
   }
 
   async create(userId: string, dto: CreateBlogDto) {
-    // Validate that the editor and blogAuthor belong to the user
+
     const [editor, blogAuthor] = await Promise.all([
       this.prisma.editor.findFirst({
         where: { id: dto.editorId, userId, isDeleted: false },
