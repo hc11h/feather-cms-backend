@@ -12,7 +12,7 @@ import { DevApiModule } from './dev-api/dev-api.module';
 
 @Module({
   imports: [
-    // Global config for .env variables
+
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',

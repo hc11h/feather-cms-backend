@@ -11,7 +11,7 @@ export class BlogsService {
   constructor(private prisma: PrismaService) {}
 
   async findAll(userId: string) {
-    // Get blogs where the user is the owner via BlogAuthor
+
     return this.prisma.blog.findMany({
       where: {
         isDeleted: false,
@@ -51,14 +51,12 @@ export class BlogsService {
   }
 
   async update(userId: string, id: string, dto: UpdateBlogDto) {
-    // Find the blog by id and user
     const blog = await this.prisma.blog.findFirst({
       where: { id, isDeleted: false, blogAuthor: { userId } },
     });
   
     if (!blog) throw new NotFoundException('Blog not found');
   
-    // Check if editorId exists and is valid
     if (dto.editorId) {
       const editor = await this.prisma.editor.findFirst({
         where: { id: dto.editorId, userId, isDeleted: false },
@@ -66,7 +64,6 @@ export class BlogsService {
       if (!editor) throw new NotFoundException('Editor not found');
     }
   
-    // Proceed with the update if editorId is valid
     return this.prisma.blog.update({
       where: { id },
       data: {
@@ -110,7 +107,7 @@ export class BlogsService {
     });
   }
 
-  // Cron job: every minute, publish scheduled blogs
+
   @Cron(CronExpression.EVERY_MINUTE)
   async handleScheduledPublishing() {
     const now = new Date();

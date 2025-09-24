@@ -12,17 +12,17 @@ export class ApiKeyService {
   constructor(private prisma: PrismaService) {}
 
   async generate(userId: string) {
-    // Check if user already has an active key
+
     const existing = await this.prisma.apiKey.findUnique({ where: { userId } });
     if (existing && existing.isActive) {
       throw new ForbiddenException(
         'API key already exists. Revoke it before generating a new one.',
       );
     }
-    // Generate random key
+
     const plainKey = randomBytes(32).toString('hex');
     const hashedKey = await bcrypt.hash(plainKey, 10);
-    // Upsert key
+
     await this.prisma.apiKey.upsert({
       where: { userId },
       update: { key: hashedKey, isActive: true },
@@ -49,14 +49,12 @@ export class ApiKeyService {
   }
 
   async validateApiKey(providedKey: string) {
-    // Find active key
     const apiKey = await this.prisma.apiKey.findFirst({
       where: { isActive: true },
     });
     if (!apiKey) return null;
     const isValid = await bcrypt.compare(providedKey, apiKey.key);
     if (!isValid) return null;
-    // Return userId for further use
     return apiKey.userId;
   }
 }
