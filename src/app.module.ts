@@ -7,6 +7,8 @@ import { AuthModule } from './auth/auth.module';
 import { EditorModule } from './editor/editor.module';
 import { BlogAuthorModule } from './author/author.module';
 import { BlogsModule } from './blogs/blogs.module';
+import { ApiKeyModule } from './api-key/api-key.module';
+import { DevApiModule } from './dev-api/dev-api.module';
 
 @Module({
   imports: [
@@ -20,6 +22,8 @@ import { BlogsModule } from './blogs/blogs.module';
     EditorModule,
     BlogAuthorModule,
     BlogsModule,
+    ApiKeyModule,
+    DevApiModule
   ],
   controllers: [AppController],
   providers: [AppService],
