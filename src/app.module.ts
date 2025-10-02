@@ -12,7 +12,6 @@ import { DevApiModule } from './dev-api/dev-api.module';
 
 @Module({
   imports: [
-
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: '.env',
@@ -23,7 +22,7 @@ import { DevApiModule } from './dev-api/dev-api.module';
     BlogAuthorModule,
     BlogsModule,
     ApiKeyModule,
-    DevApiModule
+    DevApiModule,
   ],
   controllers: [AppController],
   providers: [AppService],

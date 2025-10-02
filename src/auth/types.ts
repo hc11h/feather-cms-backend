@@ -5,3 +5,8 @@ export interface GoogleProfile {
   picture: string;
   accessToken: string;
 }
+
+export interface JwtPayloadUser {
+  id: string;
+  email: string;
+}

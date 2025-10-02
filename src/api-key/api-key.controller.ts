@@ -2,7 +2,6 @@ import { Controller, Post, Get, Delete, Req, UseGuards } from '@nestjs/common';
 import { ApiKeyService } from './api-key.service';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
-
 @UseGuards(JwtAuthGuard)
 @Controller('/api-key')
 export class ApiKeyController {

@@ -12,7 +12,6 @@ export class ApiKeyService {
   constructor(private prisma: PrismaService) {}
 
   async generate(userId: string) {
-
     const existing = await this.prisma.apiKey.findUnique({ where: { userId } });
     if (existing && existing.isActive) {
       throw new ForbiddenException(

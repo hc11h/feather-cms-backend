@@ -17,7 +17,6 @@ import { CreateBlogAuthorDto } from './dto/create-author.dto';
 import { UpdateBlogAuthorDto } from './dto/update-author.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
-
 @UseGuards(JwtAuthGuard)
 @Controller('/authors')
 export class BlogAuthorController {
