@@ -1,5 +1,16 @@
 import {
-  Controller, Get, Post, Put, Delete, Param, Body, Req, UsePipes, ValidationPipe, ParseUUIDPipe, UseGuards
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Param,
+  Body,
+  Req,
+  UsePipes,
+  ValidationPipe,
+  ParseUUIDPipe,
+  UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { EditorService } from './editor.service';
@@ -20,7 +31,7 @@ export class EditorController {
   @Post()
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async create(@Req() req, @Body() dto: CreateEditorDto) {
-    console.log('details', req.user)
+    // console.log('details', req.user)
     const userId = req.user?.id;
     return this.editorService.create(userId, dto);
   }

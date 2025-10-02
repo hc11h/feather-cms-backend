@@ -4,23 +4,23 @@ import { JwtService } from '@nestjs/jwt';
 import type { Response } from 'express';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { JwtPayloadUser } from './types';
 
 @Controller('auth')
 export class AuthController {
   constructor(
     private jwtService: JwtService,
     private authService: AuthService,
-  ) { }
+  ) {}
 
   @Get('google')
   @UseGuards(AuthGuard('google'))
-  async googleAuth() { }
+  async googleAuth() {}
 
   @Get('me')
   @UseGuards(JwtAuthGuard)
   getProfile(@Req() req) {
-
-    return req.user;
+    return req.user as JwtPayloadUser;
   }
 
   @Get('callback/google')
@@ -28,9 +28,9 @@ export class AuthController {
   async googleAuthRedirect(@Req() req, @Res() res: Response) {
     const profile = req.user;
 
-    console.log('profile is this', profile);
+    // console.log('profile is this', profile);
 
-    console.log('request is this', req);
+    // console.log('request is this', req);
 
     const user = await this.authService.validateOAuthLogin(profile);
 

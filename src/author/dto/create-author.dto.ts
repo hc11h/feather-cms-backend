@@ -11,7 +11,7 @@ export class CreateBlogAuthorDto {
 
   @IsString()
   @IsOptional()
-  profileImage?: string; 
+  profileImage?: string;
 
   @IsString()
   @IsOptional()

@@ -18,7 +18,6 @@ import { UpdateBlogDto } from './dto/update-blog.dto';
 import { ScheduleBlogDto } from './dto/schedule-blog.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
-
 @UseGuards(JwtAuthGuard)
 @Controller('/blogs')
 export class BlogsController {

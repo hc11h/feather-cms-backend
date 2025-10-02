@@ -11,7 +11,6 @@ export class BlogsService {
   constructor(private prisma: PrismaService) {}
 
   async findAll(userId: string) {
-
     return this.prisma.blog.findMany({
       where: {
         isDeleted: false,
@@ -30,7 +29,6 @@ export class BlogsService {
   }
 
   async create(userId: string, dto: CreateBlogDto) {
-
     const [editor, blogAuthor] = await Promise.all([
       this.prisma.editor.findFirst({
         where: { id: dto.editorId, userId, isDeleted: false },
@@ -54,16 +52,16 @@ export class BlogsService {
     const blog = await this.prisma.blog.findFirst({
       where: { id, isDeleted: false, blogAuthor: { userId } },
     });
-  
+
     if (!blog) throw new NotFoundException('Blog not found');
-  
+
     if (dto.editorId) {
       const editor = await this.prisma.editor.findFirst({
         where: { id: dto.editorId, userId, isDeleted: false },
       });
       if (!editor) throw new NotFoundException('Editor not found');
     }
-  
+
     return this.prisma.blog.update({
       where: { id },
       data: {
@@ -72,7 +70,6 @@ export class BlogsService {
       },
     });
   }
-  
 
   async softDelete(userId: string, id: string) {
     const blog = await this.prisma.blog.findFirst({
@@ -106,7 +103,6 @@ export class BlogsService {
       data: { status: 'SCHEDULED', scheduledAt: new Date(dto.scheduledAt) },
     });
   }
-
 
   @Cron(CronExpression.EVERY_MINUTE)
   async handleScheduledPublishing() {

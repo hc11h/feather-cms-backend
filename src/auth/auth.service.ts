@@ -7,7 +7,7 @@ export class AuthService {
   constructor(private prisma: PrismaService) {}
 
   async validateOAuthLogin(profile: GoogleProfile) {
-    console.log(profile);
+    // console.log(profile);
     const email = profile.email;
     if (!email) {
       throw new Error('No email found in Google profile');
