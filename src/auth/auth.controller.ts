@@ -27,16 +27,17 @@ export class AuthController {
   @UseGuards(AuthGuard('google'))
   async googleAuthRedirect(@Req() req, @Res() res: Response) {
     const profile = req.user;
-
-    // console.log('profile is this', profile);
-
-    // console.log('request is this', req);
-
     const user = await this.authService.validateOAuthLogin(profile);
 
     const token = this.jwtService.sign({ email: user.email });
-    return res.redirect(
-      `${process.env.CLIENT_URL}/auth/success?token=${token}`,
-    );
+
+    res.cookie('authToken', token, {
+      httpOnly: true, // 🔒 not accessible to JS
+      secure: true, // 🔒 HTTPS only (set false locally if needed)
+      sameSite: 'lax', // ✅ good default
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    return res.redirect(`${process.env.CLIENT_URL}/auth/success`);
   }
 }
