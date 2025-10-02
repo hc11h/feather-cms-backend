@@ -31,7 +31,6 @@ export class EditorController {
   @Post()
   @UsePipes(new ValidationPipe({ whitelist: true }))
   async create(@Req() req, @Body() dto: CreateEditorDto) {
-    // console.log('details', req.user)
     const userId = req.user?.id;
     return this.editorService.create(userId, dto);
   }

@@ -32,10 +32,10 @@ export class AuthController {
     const token = this.jwtService.sign({ email: user.email });
 
     res.cookie('authToken', token, {
-      httpOnly: true, // 🔒 not accessible to JS
-      secure: true, // 🔒 HTTPS only (set false locally if needed)
-      sameSite: 'lax', // ✅ good default
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     });
 
     return res.redirect(`${process.env.CLIENT_URL}/auth/success`);
