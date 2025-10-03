@@ -4,6 +4,8 @@ import { CreateBlogDto } from './dto/create-blog.dto';
 import { UpdateBlogDto } from './dto/update-blog.dto';
 import { ScheduleBlogDto } from './dto/schedule-blog.dto';
 import { Cron, CronExpression } from '@nestjs/schedule';
+import { Mutex } from 'async-mutex';
+const publishingMutex = new Mutex();
 
 @Injectable()
 export class BlogsService {
@@ -106,20 +108,42 @@ export class BlogsService {
 
   @Cron(CronExpression.EVERY_MINUTE)
   async handleScheduledPublishing() {
-    const now = new Date();
-    const blogs = await this.prisma.blog.findMany({
-      where: {
-        status: 'SCHEDULED',
-        scheduledAt: { lte: now },
-        isDeleted: false,
-      },
-    });
-    for (const blog of blogs) {
-      await this.prisma.blog.update({
-        where: { id: blog.id },
-        data: { status: 'PUBLIC', publishedAt: now, scheduledAt: null },
+    const release = await publishingMutex.acquire();
+    try {
+      const now = new Date();
+
+      const blogs = await this.prisma.blog.findMany({
+        where: {
+          status: 'SCHEDULED',
+          scheduledAt: { lte: now },
+          isDeleted: false,
+        },
+        select: { id: true }, // Only fetch what's necessary
       });
-      this.logger.log(`Published scheduled blog: ${blog.id}`);
+
+      if (blogs.length === 0) return;
+
+      this.logger.log(`Publishing ${blogs.length} scheduled blog(s)...`);
+
+      // Batch update in parallel using Promise.all
+      await Promise.all(
+        blogs.map((blog) =>
+          this.prisma.blog.update({
+            where: { id: blog.id },
+            data: {
+              status: 'PUBLIC',
+              publishedAt: now,
+              scheduledAt: null,
+            },
+          }),
+        ),
+      );
+
+      this.logger.log(`Published ${blogs.length} blog(s) successfully.`);
+    } catch (err) {
+      this.logger.error('Error publishing scheduled blogs', err.stack);
+    } finally {
+      release();
     }
   }
 }
