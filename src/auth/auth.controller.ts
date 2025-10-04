@@ -30,6 +30,18 @@ export class AuthController {
     return { email: payload.email };
   }
 
+  @Get('logout')
+  logout(@Res() res: Response) {
+    res.clearCookie('authToken', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      path: '/',
+    });
+
+    return res.status(200).json({ message: 'Logged out successfully' });
+  }
+
   @Get('callback/google')
   @UseGuards(AuthGuard('google'))
   async googleAuthRedirect(@Req() req, @Res() res: Response) {
@@ -61,8 +73,8 @@ export class AuthController {
 
     res.cookie('authToken', token, {
       httpOnly: true,
-      secure: isProduction,
-      sameSite: 'none',
+      secure: isProduction, // only true in production
+      sameSite: isProduction ? 'none' : 'lax', // 'none' for cross-domain HTTPS, 'lax' for local dev
       maxAge: 7 * 24 * 60 * 60 * 1000,
       path: '/',
     });
