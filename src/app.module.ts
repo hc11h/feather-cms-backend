@@ -9,6 +9,7 @@ import { BlogAuthorModule } from './author/author.module';
 import { BlogsModule } from './blogs/blogs.module';
 import { ApiKeyModule } from './api-key/api-key.module';
 import { DevApiModule } from './dev-api/dev-api.module';
+import { AnalyticsModule } from './analytics/analytics.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { DevApiModule } from './dev-api/dev-api.module';
     BlogsModule,
     ApiKeyModule,
     DevApiModule,
+    AnalyticsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

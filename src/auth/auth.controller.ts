@@ -10,12 +10,13 @@ import { AuthGuard } from '@nestjs/passport';
 import { JwtService } from '@nestjs/jwt';
 import type { Response } from 'express';
 import { AuthService } from './auth.service';
-
+import { PrismaService } from '../prisma/prisma.service';
 @Controller('auth')
 export class AuthController {
   constructor(
     private jwtService: JwtService,
     private authService: AuthService,
+    private readonly prisma: PrismaService,
   ) {}
 
   @Get('google')
@@ -23,11 +24,28 @@ export class AuthController {
   async googleAuth() {}
 
   @Get('me')
-  getProfile(@Req() req) {
+  async getProfile(@Req() req) {
     const token = req.cookies['authToken'];
     if (!token) throw new UnauthorizedException();
     const payload = this.jwtService.verify(token);
-    return { email: payload.email };
+    // Fetch user from DB
+    const user = await this.prisma.user.findUnique({
+      where: { email: payload.email },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        image: true,
+        // role: true,
+        lastLogin: true,
+      },
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    return user;
   }
 
   @Get('logout')
