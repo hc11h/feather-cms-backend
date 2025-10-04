@@ -1,10 +1,15 @@
-import { Controller, Get, Req, Res, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Req,
+  Res,
+  UnauthorizedException,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { JwtService } from '@nestjs/jwt';
 import type { Response } from 'express';
 import { AuthService } from './auth.service';
-import { JwtAuthGuard } from './guards/jwt-auth.guard';
-import { JwtPayloadUser } from './types';
 
 @Controller('auth')
 export class AuthController {
@@ -18,9 +23,11 @@ export class AuthController {
   async googleAuth() {}
 
   @Get('me')
-  @UseGuards(JwtAuthGuard)
   getProfile(@Req() req) {
-    return req.user as JwtPayloadUser;
+    const token = req.cookies['authToken'];
+    if (!token) throw new UnauthorizedException();
+    const payload = this.jwtService.verify(token);
+    return { email: payload.email };
   }
 
   @Get('callback/google')
