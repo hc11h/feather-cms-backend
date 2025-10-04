@@ -55,9 +55,8 @@ export class AuthController {
     res.cookie('authToken', token, {
       httpOnly: true,
       secure: isProduction,
-      sameSite: 'lax',
+      sameSite: 'none',
       maxAge: 7 * 24 * 60 * 60 * 1000,
-      domain: `.${domain}`,
       path: '/',
     });
 
